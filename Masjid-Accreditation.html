@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Apply – Masjid Accreditation | NCMF NCR</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f0f7f0;
+            color: #1e2a3a;
+            line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ----- TOP BAR (green) ----- */
+        .top-bar {
+            background: #1a4a2a;
+            color: #fff;
+            padding: 14px 0;
+            border-bottom: 4px solid #ffcc00;
+        }
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .logo-img {
+            height: 70px;
+            width: 70px;
+            background: #fff;
+            padding: 6px;
+            border-radius: 10px;
+            object-fit: contain;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+        .org-name { flex: 1; min-width: 180px; }
+        .org-name h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.5px; line-height: 1.2; }
+        .org-name span { font-size: 0.85rem; font-weight: 300; opacity: 0.85; display: block; }
+        .social-icons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+        .social-icons a {
+            display: inline-block;
+            font-size: 1.3rem;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .social-icons a:hover { color: #ffcc00; transform: scale(1.1); }
+
+        /* ----- NAVIGATION ----- */
+        .navbar {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar .container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            gap: 6px 0;
+        }
+        .nav-links li a {
+            display: block;
+            padding: 14px 18px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1e2a3a;
+            border-bottom: 3px solid transparent;
+            transition: 0.2s;
+        }
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: #1a4a2a;
+            border-bottom-color: #ffcc00;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.6rem;
+            background: none;
+            border: none;
+            color: #1a4a2a;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* ----- HERO / PAGE HEADER ----- */
+        .page-header {
+            background: linear-gradient(135deg, #1a4a2a 0%, #2e7d32 100%);
+            color: #fff;
+            padding: 50px 0 40px;
+            text-align: center;
+        }
+        .page-header h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .page-header p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        section { padding: 50px 0; }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1a4a2a;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #ffcc00;
+            margin-top: 6px;
+            border-radius: 4px;
+        }
+        .section-sub {
+            color: #3d5a3d;
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+        }
+
+        /* ----- REQUIREMENTS LIST ----- */
+        .requirements-list {
+            background: #fff;
+            border-radius: 16px;
+            padding: 35px 40px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+            border-left: 6px solid #ffcc00;
+        }
+        .requirements-list h3 {
+            color: #1a4a2a;
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+        }
+        .requirements-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        .requirements-list ul li {
+            padding: 12px 0;
+            border-bottom: 1px solid #edf2f7;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 1.05rem;
+        }
+        .requirements-list ul li:last-child { border-bottom: none; }
+        .requirements-list ul li i {
+            width: 28px;
+            color: #1a4a2a;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        .requirements-list ul li .req-num {
+            display: inline-block;
+            background: #1a4a2a;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* ----- FORM DOWNLOAD CARD ----- */
+        .download-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 35px 40px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+            text-align: center;
+            border-left: 6px solid #1a4a2a;
+        }
+        .download-card h3 {
+            color: #1a4a2a;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        .download-card p {
+            color: #3d5a3d;
+            margin-bottom: 20px;
+        }
+        .btn-download {
+            display: inline-block;
+            background: #1a4a2a;
+            color: #fff;
+            border: none;
+            padding: 14px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 14px rgba(26,74,42,0.3);
+        }
+        .btn-download:hover {
+            background: #2e7d32;
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(26,74,42,0.4);
+        }
+        .btn-download i {
+            margin-right: 10px;
+        }
+
+        /* ----- BACK BUTTON ----- */
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #1a4a2a;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            color: #2e7d32;
+            transform: translateX(-4px);
+        }
+        .back-link i {
+            margin-right: 8px;
+        }
+
+        /* ----- FOOTER ----- */
+        .footer {
+            background: #1a4a2a;
+            color: #dbe4ed;
+            padding: 30px 0 20px;
+            margin-top: 20px;
+        }
+        .footer .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .footer small { opacity: 0.8; font-size: 0.9rem; }
+        .footer a { color: #ffcc00; }
+
+        /* ----- LOADING ANIMATION ----- */
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #eaf7ec;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        #loader-wrapper.hidden { opacity: 0; visibility: hidden; }
+        .loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #d0e6d5;
+            border-top: 5px solid #1f7a3f;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        .loader-text {
+            color: #0f4a2a;
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 768px) {
+            .page-header h2 { font-size: 1.7rem; }
+            .requirements-list,
+            .download-card { padding: 25px 20px; }
+            .org-name h1 { font-size: 1.25rem; }
+        }
+        @media (max-width: 640px) {
+            .menu-toggle { display: block; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                padding: 6px 0 14px;
+                gap: 0;
+            }
+            .nav-links.open { display: flex; }
+            .nav-links li a {
+                padding: 12px 0;
+                border-bottom: none;
+                border-left: 3px solid transparent;
+            }
+            .nav-links li a:hover,
+            .nav-links li a.active {
+                border-bottom-color: transparent;
+                border-left-color: #ffcc00;
+                background: #f8faff;
+            }
+            .logo-wrapper {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            .logo-img { height: 55px; width: 55px; padding: 4px; }
+            .org-name {
+                text-align: center;
+                flex: 0 0 100%;
+                min-width: unset;
+            }
+            .org-name h1 { font-size: 1.1rem; }
+            .social-icons {
+                width: 100%;
+                justify-content: center;
+                margin-top: 4px;
+            }
+            .social-icons a { margin: 0 8px; }
+            .page-header { padding: 35px 0 25px; }
+            .page-header h2 { font-size: 1.4rem; }
+            .footer .container { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== LOADING ANIMATION ===== -->
+<div id="loader-wrapper">
+    <div class="loader">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Loading...</div>
+    </div>
+</div>
+
+<!-- ===== TOP BAR ===== -->
+<header class="top-bar">
+    <div class="container">
+        <div class="logo-wrapper">
+            <img src="logo.jpg" alt="NCMF NCR Logo" class="logo-img" />
+            <div class="org-name">
+                <h1>National Commission on Muslim Filipinos</h1>
+                <span>National Capital Region</span>
+            </div>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/NCMFNCR" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+                <a href="#"><i class="fas fa-map-pin"></i></a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="navbar" id="navbar">
+    <div class="container">
+        <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="index.html#services" class="active">Services</a></li>
+            <li><a href="index.html#office">NCMF - NCR Office</a></li>
+            <li><a href="index.html#mission-vision">Mission & Vision</a></li>
+            <li><a href="index.html#updates">Updates</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ===== PAGE HEADER ===== -->
+<section class="page-header">
+    <div class="container">
+        <h2><i class="fas fa-mosque"></i> Masjid Accreditation</h2>
+        <p>Apply for accreditation of your Mosque or Islamic Cultural Center with the National Commission on Muslim Filipinos – National Capital Region</p>
+    </div>
+</section>
+
+<!-- ===== MAIN CONTENT ===== -->
+<section>
+    <div class="container">
+
+        <!-- REQUIREMENTS -->
+        <div class="requirements-list">
+            <h3><i class="fas fa-list-check" style="color:#1a4a2a; margin-right:10px;"></i> List of Requirements</h3>
+            <p style="color:#3d5a3d; margin-bottom:16px;">Please prepare the following documents before filling out the application form:</p>
+            <ul>
+                <li><span class="req-num">1</span> Request Letter from the Mosque/Cultural Center Administrator/Imam</li>
+                <li><span class="req-num">2</span> Photocopy of SEC Registration, Article of Incorporation & By-Laws</li>
+                <li><span class="req-num">3</span> List of Officers & Members</li>
+                <li><span class="req-num">4</span> Barangay Certification as to the existence of the Mosque/Cultural Center</li>
+                <li><span class="req-num">5</span> Mayor's Permit, if any</li>
+                <li><span class="req-num">6</span> Pictures of the Mosque/Cultural Center, Office Building, Structures and other related photos</li>
+                <li><span class="req-num">7</span> Report of ocular inspection by NCMF-CAD, if necessary for validation</li>
+                <li><span class="req-num">8</span> Duly accomplished application form & information sheet by authorized representative</li>
+            </ul>
+            <p style="margin-top:16px; color:#555; font-size:0.95rem; border-top:1px solid #edf2f7; padding-top:16px;">
+                <i class="fas fa-info-circle" style="color:#1a4a2a;"></i>
+                Please ensure all documents are complete and up-to-date. Incomplete applications will not be processed.
+            </p>
+        </div>
+
+        <!-- DOWNLOAD FORM -->
+        <div class="download-card">
+            <h3><i class="fas fa-file-pdf" style="color:#e74c3c; margin-right:10px;"></i> Download Application Form</h3>
+            <p>Download the official Masjid Accreditation Form. Fill it out completely and submit it to the NCMF NCR office along with the required documents.</p>
+            <a href="Masjid-Accreditation.pdf" download class="btn-download">
+                <i class="fas fa-download"></i> Download Form
+            </a>
+            <p style="margin-top:14px; font-size:0.85rem; color:#777;">
+                <i class="fas fa-file-pdf"></i> PDF document · 3 pages · 550 KB
+            </p>
+        </div>
+
+        <!-- BACK LINK -->
+        <div style="text-align:center; margin-top:10px;">
+            <a href="index.html#services" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Services
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer" id="contact">
+    <div class="container">
+        <div>
+            <h3 style="color:#fff; font-size:1.2rem;">NCMF – National Capital Region</h3>
+            <p style="opacity:0.8; margin-top:4px;">Quezon City, Metro Manila, Philippines</p>
+            <p style="opacity:0.8;"><i class="fas fa-phone-alt"></i> +63 (2) 8123 4567</p>
+            <p style="opacity:0.8;"><i class="fas fa-envelope"></i> ncmf.ncr@example.gov.ph</p>
+        </div>
+        <div style="text-align:right;">
+            <a href="https://www.facebook.com/NCMFNCR" target="_blank" style="color:#ffcc00; font-size:1.4rem; margin-right:12px;"><i class="fab fa-facebook"></i></a>
+            <small>&copy; 2026 NCMF NCR. All rights reserved.</small>
+        </div>
+    </div>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('menuToggle');
+        const nav = document.getElementById('navLinks');
+        toggle.addEventListener('click', function() { nav.classList.toggle('open'); });
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function() { nav.classList.remove('open'); });
+        });
+    });
+
+    // Hide loader on page load
+    window.addEventListener('load', function() {
+        const loader = document.getElementById('loader-wrapper');
+        loader.classList.add('hidden');
+    });
+</script>
+
+</body>
+</html>
