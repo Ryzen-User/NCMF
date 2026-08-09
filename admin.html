@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin Panel | NCMF NCR</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f0f7f0;
+            color: #1e2a3a;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .admin-container {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 35px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            border-left: 6px solid #1a4a2a;
+        }
+        .admin-container .logo-area {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .admin-container .logo-area i {
+            font-size: 3rem;
+            color: #1a4a2a;
+            background: #e8f5e9;
+            padding: 16px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .admin-container .logo-area h1 {
+            font-size: 1.6rem;
+            color: #1a4a2a;
+        }
+        .admin-container .logo-area p {
+            color: #3d5a3d;
+            font-size: 0.9rem;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #1a4a2a;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #d0e6d5;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: 0.3s;
+            background: #f8fbf8;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #1a4a2a;
+            box-shadow: 0 0 0 3px rgba(26,74,42,0.15);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: #1a4a2a;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 6px;
+        }
+        .btn-login:hover {
+            background: #2e7d32;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(26,74,42,0.3);
+        }
+        .error-msg {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+            margin-bottom: 14px;
+            border-left: 4px solid #e74c3c;
+        }
+        .error-msg.show { display: block; }
+        .admin-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #3d5a3d;
+        }
+        .admin-footer a {
+            color: #1a4a2a;
+            font-weight: 600;
+        }
+
+        /* ===== DASHBOARD STYLES ===== */
+        .dashboard {
+            display: none;
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+        }
+        .dashboard.active { display: block; }
+        .login-form { display: block; }
+        .login-form.hidden { display: none; }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: #fff;
+            padding: 20px 28px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+            border-left: 6px solid #ffcc00;
+        }
+        .dash-header h2 {
+            font-size: 1.5rem;
+            color: #1a4a2a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .dash-header h2 i { color: #ffcc00; }
+        .dash-header .user-badge {
+            background: #e8f5e9;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1a4a2a;
+        }
+        .btn-logout {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-logout:hover { background: #c0392b; }
+
+        .dash-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #fff;
+            padding: 18px 22px;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid #1a4a2a;
+        }
+        .stat-card .num { font-size: 2rem; font-weight: 700; color: #1a4a2a; }
+        .stat-card .label { color: #3d5a3d; font-size: 0.85rem; }
+
+        .dash-table-wrap {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            overflow-x: auto;
+        }
+        .dash-table-wrap .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .dash-table-wrap h3 {
+            color: #1a4a2a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dash-table-wrap h3 i { color: #ffcc00; }
+        .btn-add {
+            background: #1a4a2a;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-add:hover { background: #2e7d32; transform: scale(1.02); }
+
+        .dash-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .dash-table th {
+            background: #e8f5e9;
+            color: #1a4a2a;
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 2px solid #1a4a2a;
+            white-space: nowrap;
+        }
+        .dash-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #edf2f7;
+            vertical-align: middle;
+        }
+        .dash-table tr:hover td { background: #f8fbf8; }
+        .dash-table .rfq-no { font-weight: 600; color: #1a4a2a; }
+        .dash-table .rfq-desc { max-width: 300px; word-break: break-word; }
+        .dash-table .rfq-date { color: #3d5a3d; }
+        .dash-table .rfq-awardee {
+            background: #e8f5e9;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #1a4a2a;
+            display: inline-block;
+        }
+        .btn-edit {
+            background: #ffcc00;
+            color: #1a4a2a;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-right: 4px;
+        }
+        .btn-edit:hover { background: #f5b800; transform: scale(1.05); }
+        .btn-delete {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-delete:hover { background: #c0392b; transform: scale(1.05); }
+
+        .btn-save-edit {
+            background: #1a4a2a;
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-right: 4px;
+        }
+        .btn-save-edit:hover { background: #2e7d32; }
+        .btn-cancel-edit {
+            background: #95a5a6;
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-cancel-edit:hover { background: #7f8c8d; }
+
+        .edit-input {
+            width: 100%;
+            min-width: 80px;
+            padding: 6px 10px;
+            border: 2px solid #ffcc00;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            background: #fffdf0;
+        }
+        .edit-input:focus { outline: none; border-color: #1a4a2a; }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1a4a2a;
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            font-weight: 600;
+            display: none;
+            z-index: 9999;
+            animation: slideIn 0.4s ease;
+            max-width: 400px;
+        }
+        .toast.show { display: block; }
+        .toast.success { background: #1a4a2a; border-left: 6px solid #ffcc00; }
+        .toast.error { background: #e74c3c; border-left: 6px solid #ffcc00; }
+        .toast.info { background: #2980b9; border-left: 6px solid #ffcc00; }
+        @keyframes slideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* ===== ADD RFQ MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px 36px;
+            max-width: 550px;
+            width: 100%;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+            border-left: 6px solid #1a4a2a;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-box h3 {
+            color: #1a4a2a;
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+        }
+        .modal-box p { color: #3d5a3d; margin-bottom: 18px; font-size: 0.95rem; }
+        .modal-box .form-group { margin-bottom: 14px; }
+        .modal-box .form-group label { font-weight: 600; color: #1a4a2a; font-size: 0.9rem; }
+        .modal-box .form-group input,
+        .modal-box .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #d0e6d5;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+        .modal-box .form-group input:focus,
+        .modal-box .form-group textarea:focus {
+            outline: none;
+            border-color: #1a4a2a;
+            box-shadow: 0 0 0 3px rgba(26,74,42,0.12);
+        }
+        .modal-box .form-group textarea { resize: vertical; min-height: 60px; }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+        }
+        .btn-modal-save {
+            background: #1a4a2a;
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            flex: 1;
+        }
+        .btn-modal-save:hover { background: #2e7d32; }
+        .btn-modal-cancel {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            flex: 1;
+        }
+        .btn-modal-cancel:hover { background: #c0392b; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* ===== CONFIRM DELETE MODAL ===== */
+        .modal-box.confirm-box { max-width: 420px; }
+        .modal-box.confirm-box .warning-icon {
+            font-size: 3rem;
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .modal-box.confirm-box p { text-align: center; }
+
+        /* ===== LOADING SPINNER ===== */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #d0e6d5;
+            border-top: 3px solid #1a4a2a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .btn-loading { opacity: 0.7; pointer-events: none; }
+
+        @media (max-width:768px) {
+            .admin-container { padding: 28px 20px; }
+            .dash-table-wrap { padding: 14px; }
+            .dash-table { font-size: 0.75rem; }
+            .dash-table th, .dash-table td { padding: 6px 6px; }
+            .dash-header { flex-direction: column; align-items: stretch; text-align: center; }
+            .dash-header .user-badge { align-self: center; }
+            .btn-logout { align-self: center; }
+            .dash-table-wrap .toolbar { flex-direction: column; align-items: stretch; }
+            .btn-add { justify-content: center; }
+            .modal-box { padding: 24px 20px; }
+            .edit-input { min-width: 50px; font-size: 0.75rem; padding: 4px 6px; }
+            .btn-edit, .btn-delete, .btn-save-edit, .btn-cancel-edit {
+                font-size: 0.65rem;
+                padding: 4px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== LOGIN FORM ===== -->
+<div class="admin-container login-form" id="loginForm">
+    <div class="logo-area">
+        <i class="fas fa-lock"></i>
+        <h1>Admin Panel</h1>
+        <p>National Commission on Muslim Filipinos – NCR</p>
+    </div>
+    <div class="error-msg" id="errorMsg">Invalid username or password. Please try again.</div>
+    <form id="adminLogin">
+        <div class="form-group">
+            <label><i class="fas fa-user"></i> Username</label>
+            <input type="text" id="username" placeholder="Enter username" value="Admin" />
+        </div>
+        <div class="form-group">
+            <label><i class="fas fa-key"></i> Password</label>
+            <input type="password" id="password" placeholder="Enter password" value="Admin" />
+        </div>
+        <button type="submit" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+    </form>
+    <div class="admin-footer">
+        <p>Secure Admin Access · <a href="index.html">Return to Website</a></p>
+    </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div class="dashboard" id="dashboard">
+    <div class="dash-header">
+        <h2><i class="fas fa-user-cog"></i> RFQ Management</h2>
+        <span class="user-badge"><i class="fas fa-user-check"></i> Admin</span>
+        <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+
+    <div class="dash-stats">
+        <div class="stat-card"><div class="num" id="totalRFQ">0</div><div class="label">Total RFQ Entries</div></div>
+        <div class="stat-card"><div class="num" id="awardedRFQ">0</div><div class="label">Awarded Bids</div></div>
+        <div class="stat-card"><div class="num" id="pendingRFQ">0</div><div class="label">Pending</div></div>
+    </div>
+
+    <div class="dash-table-wrap">
+        <div class="toolbar">
+            <h3><i class="fas fa-file-invoice"></i> RFQ Bulletin</h3>
+            <button class="btn-add" id="openAddModal"><i class="fas fa-plus"></i> Add New RFQ</button>
+        </div>
+        <p style="color:#3d5a3d; margin-bottom:14px; font-size:0.9rem;">
+            Click <strong>"Edit"</strong> to modify an entry, <strong>"Delete"</strong> to remove it, or <strong>"Add New RFQ"</strong> to create a new entry.
+            Changes are saved to Google Sheets.
+        </p>
+        <div id="loadingMessage" style="display:none; text-align:center; padding:20px;">
+            <div class="loading-spinner"></div> Loading data from Google Sheets...
+        </div>
+        <table class="dash-table" id="rfqTable">
+            <thead>
+                <tr>
+                    <th>RFQ NO.</th>
+                    <th>DESCRIPTION</th>
+                    <th>DATE PUBLISHED</th>
+                    <th>AWARDEE</th>
+                    <th style="text-align:center;">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody id="rfqTableBody">
+                <!-- Rows inserted by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ===== ADD RFQ MODAL ===== -->
+<div class="modal-overlay" id="addModal">
+    <div class="modal-box">
+        <h3><i class="fas fa-plus-circle" style="color:#1a4a2a;"></i> Add New RFQ</h3>
+        <p>Fill in the details below to create a new RFQ entry.</p>
+        <form id="addRFQForm">
+            <div class="form-group">
+                <label>RFQ Number <span style="color:#e74c3c;">*</span></label>
+                <input type="text" id="newRfqNo" placeholder="e.g., 2026-050" required />
+            </div>
+            <div class="form-group">
+                <label>Description <span style="color:#e74c3c;">*</span></label>
+                <textarea id="newRfqDesc" placeholder="Enter full description of the procurement" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Date Published <span style="color:#e74c3c;">*</span></label>
+                <input type="text" id="newRfqDate" placeholder="e.g., 15 Aug 2026" required />
+            </div>
+            <div class="form-group">
+                <label>Awardee <span style="color:#e74c3c;">*</span></label>
+                <input type="text" id="newRfqAwardee" placeholder="e.g., ABC Company, Inc." required />
+            </div>
+            <div class="modal-actions">
+                <button type="submit" class="btn-modal-save" id="addSubmitBtn"><i class="fas fa-save"></i> Save RFQ</button>
+                <button type="button" class="btn-modal-cancel" id="closeAddModal"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===== CONFIRM DELETE MODAL ===== -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box confirm-box">
+        <div class="warning-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <h3 style="text-align:center;">Confirm Delete</h3>
+        <p id="deleteConfirmText">Are you sure you want to delete this RFQ entry? This action cannot be undone.</p>
+        <div class="modal-actions" style="margin-top:18px;">
+            <button class="btn-modal-save" id="confirmDeleteBtn" style="background:#e74c3c;"><i class="fas fa-trash"></i> Yes, Delete</button>
+            <button class="btn-modal-cancel" id="cancelDeleteBtn"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== TOAST NOTIFICATION ===== -->
+<div class="toast" id="toast"></div>
+
+<script>
+    // ===== CONFIGURATION =====
+    const SHEETDB_URL = 'https://sheetdb.io/api/v1/9fvor0r6wbgwh';
+
+    // ===== DEFAULT RFQ DATA =====
+    const defaultRFQData = [
+        {
+            rfqNo: 'SPECIAL HAJJ BIDS AND AWARDS COMMITTEE RFQ',
+            description: 'PROCUREMENT OF HAJJ 2027 COMPREHENSIVE SERVICE PACKAGE: MADINAH AND MAKKAH ACCOMMODATION, MASHAER AND GROUND SERVICES PACKAGE, TRANSPORTATION, CATERING FOR MAKKAH AND HEALTHCARE SERVICES',
+            datePublished: '29 Jul 2026',
+            awardee: 'Al-Rajhi Travel & Tours, Inc.'
+        },
+        {
+            rfqNo: '2026-042',
+            description: 'PROCUREMENT OF PORTABLE INTERNET SATELLITE SYSTEM',
+            datePublished: '16 Jul 2026',
+            awardee: 'Starlink Philippines, Inc.'
+        },
+        {
+            rfqNo: '2026-041',
+            description: 'LEASE OF VENUE WITH MEALS AND ACCOMMODATION FOR THE BPCR OPERATIONAL PLANNING',
+            datePublished: '09 Jul 2026',
+            awardee: 'Manila Grand Ballroom & Hotel'
+        },
+        {
+            rfqNo: '2026-036-A',
+            description: 'LEASE OF VENUE WITH FOOD FOR THE TESTIMONIAL DINNER FOR THE 2026 SPECIAL SHARI\'AH BAR PASSERS',
+            datePublished: '02 Jul 2026',
+            awardee: 'The Heritage Place Catering Services'
+        },
+        {
+            rfqNo: '2026-040',
+            description: 'WORKSHOP ON HARMONIZING A RESULTS-ORIENTED STRATEGIC PERFORMANCE MANAGEMENT SYSTEM (SPMS)',
+            datePublished: '25 Jun 2026',
+            awardee: 'GSI Training & Consultancy Inc.'
+        },
+        {
+            rfqNo: '2026-039',
+            description: 'HAJJ 2026 POST EVALUATION PROGRAM',
+            datePublished: '22 Jun 2026',
+            awardee: 'Hajj Management Consultants, Inc.'
+        }
+    ];
+
+    // ===== STATE =====
+    let rfqData = [];
+    let editingIndex = null;
+    let deleteIndex = null;
+    let isLoading = false;
+
+    // ===== LOAD RFQ DATA FROM GOOGLE SHEETS =====
+    async function loadRFQData() {
+        const loadingMsg = document.getElementById('loadingMessage');
+        try {
+            loadingMsg.style.display = 'block';
+            const response = await fetch(SHEETDB_URL);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            if (data && data.length > 0) {
+                const converted = data.map(row => ({
+                    rfqNo: row['RFQ No.'] || row['rfq_no'] || row['RFQ_No'] || '',
+                    description: row['Description'] || row['description'] || '',
+                    datePublished: row['Date Published'] || row['date_published'] || '',
+                    awardee: row['Awardee'] || row['awardee'] || ''
+                }));
+                localStorage.setItem('rfqData', JSON.stringify(converted));
+                loadingMsg.style.display = 'none';
+                return converted;
+            }
+        } catch (e) {
+            console.error('Error loading data from SheetDB:', e);
+        }
+        loadingMsg.style.display = 'none';
+        // Fallback to localStorage
+        const stored = localStorage.getItem('rfqData');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    return parsed;
+                }
+            } catch (e) {}
+        }
+        localStorage.setItem('rfqData', JSON.stringify(defaultRFQData));
+        return defaultRFQData;
+    }
+
+    // ===== SAVE RFQ DATA TO GOOGLE SHEETS =====
+    async function saveRFQData(data) {
+        try {
+            const rows = data.map(item => ({
+                'RFQ No.': item.rfqNo,
+                'Description': item.description,
+                'Date Published': item.datePublished,
+                'Awardee': item.awardee
+            }));
+
+            // Delete all existing rows (SheetDB method)
+            await fetch(SHEETDB_URL, { method: 'DELETE' });
+
+            // Add all new rows (SheetDB method)
+            const response = await fetch(SHEETDB_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(rows)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            localStorage.setItem('rfqData', JSON.stringify(data));
+            updateStats(data);
+            console.log('Data saved to SheetDB successfully!');
+            return true;
+        } catch (e) {
+            console.error('Error saving data to SheetDB:', e);
+            // Fallback to localStorage only
+            localStorage.setItem('rfqData', JSON.stringify(data));
+            updateStats(data);
+            showToast('⚠️ Saved locally only. Check SheetDB connection.', 'error');
+            return false;
+        }
+    }
+
+    // ===== UPDATE STATS =====
+    function updateStats(data) {
+        document.getElementById('totalRFQ').textContent = data.length;
+        document.getElementById('awardedRFQ').textContent = data.length;
+        document.getElementById('pendingRFQ').textContent = 0;
+    }
+
+    // ===== RENDER TABLE =====
+    function renderTable() {
+        const tbody = document.getElementById('rfqTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (rfqData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:#3d5a3d;">No RFQ entries found. Click "Add New RFQ" to create one.</td></tr>`;
+            return;
+        }
+        rfqData.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            if (editingIndex === index) {
+                tr.innerHTML = `
+                    <td><input type="text" class="edit-input" id="edit-rfqNo-${index}" value="${escapeHtml(item.rfqNo)}" /></td>
+                    <td><input type="text" class="edit-input" id="edit-desc-${index}" value="${escapeHtml(item.description)}" /></td>
+                    <td><input type="text" class="edit-input" id="edit-date-${index}" value="${escapeHtml(item.datePublished)}" /></td>
+                    <td><input type="text" class="edit-input" id="edit-awardee-${index}" value="${escapeHtml(item.awardee)}" /></td>
+                    <td style="text-align:center; white-space:nowrap;">
+                        <button class="btn-save-edit" onclick="saveEdit(${index})"><i class="fas fa-save"></i> Save</button>
+                        <button class="btn-cancel-edit" onclick="cancelEdit()"><i class="fas fa-times"></i></button>
+                    </td>
+                `;
+            } else {
+                tr.innerHTML = `
+                    <td class="rfq-no">${escapeHtml(item.rfqNo)}</td>
+                    <td class="rfq-desc">${escapeHtml(item.description)}</td>
+                    <td class="rfq-date">${escapeHtml(item.datePublished)}</td>
+                    <td><span class="rfq-awardee">${escapeHtml(item.awardee)}</span></td>
+                    <td style="text-align:center; white-space:nowrap;">
+                        <button class="btn-edit" onclick="startEdit(${index})"><i class="fas fa-pen"></i> Edit</button>
+                        <button class="btn-delete" onclick="confirmDelete(${index})"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+            }
+            tbody.appendChild(tr);
+        });
+        updateStats(rfqData);
+    }
+
+    // ===== ESCAPE HTML =====
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                   .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    // ===== EDIT FUNCTIONS =====
+    function startEdit(index) {
+        editingIndex = index;
+        renderTable();
+        setTimeout(() => {
+            const firstInput = document.getElementById(`edit-rfqNo-${index}`);
+            if (firstInput) firstInput.focus();
+        }, 100);
+    }
+
+    async function saveEdit(index) {
+        const rfqNo = document.getElementById(`edit-rfqNo-${index}`).value.trim();
+        const description = document.getElementById(`edit-desc-${index}`).value.trim();
+        const datePublished = document.getElementById(`edit-date-${index}`).value.trim();
+        const awardee = document.getElementById(`edit-awardee-${index}`).value.trim();
+
+        if (!rfqNo || !description || !datePublished || !awardee) {
+            showToast('All fields are required.', 'error');
+            return;
+        }
+
+        rfqData[index] = { rfqNo, description, datePublished, awardee };
+        await saveRFQData(rfqData);
+        editingIndex = null;
+        renderTable();
+        showToast(`RFQ "${rfqNo}" updated successfully!`, 'success');
+    }
+
+    function cancelEdit() {
+        editingIndex = null;
+        renderTable();
+    }
+
+    // ===== DELETE FUNCTIONS =====
+    function confirmDelete(index) {
+        deleteIndex = index;
+        document.getElementById('deleteConfirmText').innerHTML = 
+            `Are you sure you want to delete <strong>"${escapeHtml(rfqData[index].rfqNo)}"</strong>? This action cannot be undone.`;
+        document.getElementById('deleteModal').classList.add('active');
+    }
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+        if (deleteIndex !== null) {
+            const deleted = rfqData[deleteIndex];
+            rfqData.splice(deleteIndex, 1);
+            await saveRFQData(rfqData);
+            deleteIndex = null;
+            editingIndex = null;
+            renderTable();
+            document.getElementById('deleteModal').classList.remove('active');
+            showToast(`RFQ "${deleted.rfqNo}" deleted successfully.`, 'info');
+        }
+    });
+
+    document.getElementById('cancelDeleteBtn').addEventListener('click', function() {
+        deleteIndex = null;
+        document.getElementById('deleteModal').classList.remove('active');
+    });
+
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            deleteIndex = null;
+            this.classList.remove('active');
+        }
+    });
+
+    // ===== ADD NEW RFQ =====
+    document.getElementById('openAddModal').addEventListener('click', function() {
+        document.getElementById('addModal').classList.add('active');
+        document.getElementById('newRfqNo').value = '';
+        document.getElementById('newRfqDesc').value = '';
+        document.getElementById('newRfqDate').value = '';
+        document.getElementById('newRfqAwardee').value = '';
+        setTimeout(() => document.getElementById('newRfqNo').focus(), 100);
+    });
+
+    document.getElementById('closeAddModal').addEventListener('click', function() {
+        document.getElementById('addModal').classList.remove('active');
+    });
+
+    document.getElementById('addModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('active');
+        }
+    });
+
+    document.getElementById('addRFQForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const rfqNo = document.getElementById('newRfqNo').value.trim();
+        const description = document.getElementById('newRfqDesc').value.trim();
+        const datePublished = document.getElementById('newRfqDate').value.trim();
+        const awardee = document.getElementById('newRfqAwardee').value.trim();
+
+        if (!rfqNo || !description || !datePublished || !awardee) {
+            showToast('All fields are required.', 'error');
+            return;
+        }
+
+        if (rfqData.some(item => item.rfqNo.toLowerCase() === rfqNo.toLowerCase())) {
+            showToast(`RFQ "${rfqNo}" already exists. Please use a unique number.`, 'error');
+            return;
+        }
+
+        rfqData.push({ rfqNo, description, datePublished, awardee });
+        await saveRFQData(rfqData);
+        renderTable();
+        document.getElementById('addModal').classList.remove('active');
+        showToast(`RFQ "${rfqNo}" added successfully!`, 'success');
+    });
+
+    // ===== TOAST =====
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `toast show ${type}`;
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3500);
+    }
+
+    // ===== AUTHENTICATION =====
+    document.getElementById('adminLogin').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const errorMsg = document.getElementById('errorMsg');
+        const loginBtn = document.getElementById('loginBtn');
+
+        if (username === 'Admin' && password === 'Admin') {
+            errorMsg.classList.remove('show');
+            loginBtn.innerHTML = '<div class="loading-spinner"></div> Loading...';
+            loginBtn.classList.add('btn-loading');
+
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('dashboard').classList.add('active');
+
+            rfqData = await loadRFQData();
+            renderTable();
+
+            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            loginBtn.classList.remove('btn-loading');
+
+            if (window.history && window.history.pushState) {
+                window.history.pushState({ admin: true }, '', '/admin');
+            }
+        } else {
+            errorMsg.classList.add('show');
+        }
+    });
+
+    // ===== LOGOUT =====
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        document.getElementById('dashboard').classList.remove('active');
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('username').value = 'Admin';
+        document.getElementById('password').value = 'Admin';
+        document.getElementById('errorMsg').classList.remove('show');
+        if (window.history && window.history.pushState) {
+            window.history.pushState({}, '', '/');
+        }
+        editingIndex = null;
+        deleteIndex = null;
+        document.getElementById('addModal').classList.remove('active');
+        document.getElementById('deleteModal').classList.remove('active');
+    });
+
+    // ===== KEYBOARD SHORTCUTS =====
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (editingIndex !== null) {
+                cancelEdit();
+            }
+            if (document.getElementById('addModal').classList.contains('active')) {
+                document.getElementById('addModal').classList.remove('active');
+            }
+            if (document.getElementById('deleteModal').classList.contains('active')) {
+                document.getElementById('deleteModal').classList.remove('active');
+                deleteIndex = null;
+            }
+        }
+    });
+
+    // ===== CHECK URL FOR /admin =====
+    window.addEventListener('DOMContentLoaded', function() {
+        const path = window.location.pathname;
+        if (path.endsWith('/admin') || path.endsWith('/admin/')) {
+            // User will need to login manually
+        }
+    });
+</script>
+
+</body>
+</html>
